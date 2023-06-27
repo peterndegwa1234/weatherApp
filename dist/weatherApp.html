@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="output.css">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="weather.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.tomorrow.io/sdk/2.3.0/tomorrow.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-300">
+  <div class="container mx-auto py-8">
+    <div class="grid grid-cols-3 gap-4">
+      <div class="col-span-1 bg-gray-300 p-4">
+        <div class="grid-cols-3 bg-gray-300 p-4">
+          <h2 class="text-2xl font-semibold text-blue-600 mb-4">
+            <i class="fas fa-cloud text-blue-600 mr-2"></i>Srawana
+          </h2>
+          <ul class="list-none mt-4">
+            <li class="mb-2">
+              <a href="#" class="text-semibold hover:text-green-600 mt-6 h-9">
+                <i class="fas fa-chart-line mr-2 mt-9"></i>Dashboard
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="#" class="text-semibold hover:text-green-600">
+                <i class="fas fa-map mr-2 mt-10"></i>Map
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="#" class="text-semibold hover:text-green-600">
+                <i class="fas fa-map-marker-alt mr-2 mt-10"></i>Saved Location
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="#" class="text-semibold hover:bg-green-600">
+                <i class="far fa-calendar-alt mr-2 mt-10"></i>Calendar
+              </a>
+            </li>
+            <h2 class="text-xl font-semibold mt-32">System</h2>
+            <ul class="list-none mt-4">
+              <li class="mb-2">
+                <a href="#" class="text-semibold hover:text-green-600 mt-6 h-9">
+                  <i class="fas fa-cogs mr-2 mt-10"></i>Settings
+                </a>
+              </li>
+              <li class="mb-2">
+                <a href="#" class="text-semibold hover:text-green-600">
+                  <i class="fas fa-user-circle mr-2 mt-4"></i>Login Account
+                </a>
+              </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-span-0 bg-white p-4">
+        <div class="container h-full">
+          <div class="flex justify-between items-center px-4 py-2">
+            <div class="font-semibold text-2xl ">January 2023</div>
+            <input id="locationInput" type="text" placeholder="Enter location">
+            <button id="searchButton">Search</button>
+          </div>
+
+            <div>
+              <div class="inline-block items-inline">
+                <div class="font-bold text-2xl "> Thur 14 April 2023</div>
+              </div>
+            <div id="weatherInfo"></div>
+          </div>
+          <div class="container max-w-sm rounded overflow-hidden shadow-lg bg-white mt-10">
+            <div class="p-4">
+              <h3 class="text-2xl font-bold mb-10 ">Today Overview</h3>
+                <h1 class="text-lg">More details</h1>
+              <div class="flex justify-between mb-2">
+              
+                  <div class="flex items-center text-xl">
+                    <span class="text-gray-500 mr-2"><i class="fas fa-wind"></i> Wind Speed:</span>
+                    <span class="font-semibold">120 km/h</span>
+                  </div>
+                  <div class="flex items-center font-semibold text-xl">
+                    <span class="text-gray-500 mr-2"><i class="fas fa-tachometer-alt"></i> Pressure:</span>
+                    <span class="font-semibold">720 hPa</span>
+                  </div>
+                </div>
+                <div class="flex justify-between mr-2 mt-8 mb-2 text-xl">
+                  <div class="flex items-center">
+                    <span class="text-gray-500 mr-2"><i class="fas fa-cloud-rain"></i> Rain Chance:</span>
+                    <span class="font-semibold">24%</span>
+                  </div>
+                  <div class="flex items-center mt-8 font-semibold text-xl">
+                    <span class="text-gray-500 mr-2"><i class="fas fa-sun"></i> UV Index:</span>
+                    <span class="font-semibold">2,3</span>
+                  </div>
+              </div>
+              <div class="flex justify-between mt-8">
+                <h1 class="text-xl font-bold">Averange Weekly Temperature</h1>
+                <h2 class="text-xl font-semibold">Tegal,Indonesia</h2>
+              </div>
+              <div class="mt-11 font-semibold text-bold h-full w-full bg-slate-300">
+                <canvas id="myChart"></canvas>
+              </div>
+              <script>
+                const ctx = document.getElementById('myChart').getContext('2d');
+                
+                // Your chart data
+                const data = {
+                  labels: ['week 1', 'week 2', 'week 3', 'week 4', 'week 5', 'week 6', 'week 7'],
+                  datasets: [{
+                    label: 'My Dataset',
+                    data: [0, 10, 5, 2, 20, 30, 45],
+                    tension: 0.4, // Adjust this value for the smoothness of the curve
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.3)',
+                  }]
+                };
+                
+                // Chart configuration
+                const config = {
+                  type: 'line',
+                  data: data,
+                  options: {
+                    responsive: true,
+                    plugins: {
+                      legend: {
+                        display: true
+                      }
+                    },
+                    scales: {
+                      x: {
+                        grid: {
+                          display: true
+                        }
+                      },
+                      y: {
+                        grid: {
+                          display: false
+                        }
+                      }
+                    }
+                  }
+                };
+                const myChart = new Chart(ctx, config);
+              </script>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-span-1 p-4 bg-black text-semibold text-white" >
+        
+      <div class="flex justify-between mb-4">
+        <h1 class="text-lg">Majasem Barat</h1>
+        <h2 class="text-lg ">8.54 AM</h2>
+      </div>
+      <div>
+        <div class="container h-full">
+          <div class="flex justify-between mt-11">
+            <div class="bg-white-500 text-white font-bold text-4xl p-2 ">20°C</div>
+            <div class="ml-12 ">Dramatic Cloudy</div>
+          </div>
+
+<div class="text-inline ">
+  <h2 class="text-3xl font-bold mt-9 mb-11 ">Chance of Rain</h2>
+</div>
+
+
+  <div class="relative w-40 mb-4">
+    <div class="relative h-6 bg-white rounded-full">
+      <div class="absolute inset-y-0 left-0 bg-blue-400 w-1/4 rounded-full"></div>
+    </div>
+    <div class="absolute top-1/2 left-full transform -translate-y-1/2 ml-2">
+      <span class="text-white font-semibold">25%</span>
+    </div>
+  </div>
+
+  <div class="relative w-40 mb-4">
+    <div class="relative h-6 bg-white rounded-full">
+      <div class="absolute inset-y-0 left-0 bg-blue-400 w-2/5 rounded-full"></div>
+    </div>
+    <div class="absolute top-1/2 left-full transform -translate-y-1/2 ml-2">
+      <span class="text-white font-semibold">44%</span>
+    </div>
+  </div>
+<div class="relative w-40 mb-4">
+  <div class="relative h-6 bg-white rounded-full">
+    <div class="absolute inset-y-0 left-0 bg-blue-500 w-2/3 rounded-full"></div>
+  </div>
+  <div class="absolute top-1/2 left-full transform -translate-y-1/2 ml-2">
+    <span class="text-white font-semibold">67%</span>
+  </div>
+</div>
+
+
+<div class="relative w-40 mt-4">
+  <div class="relative h-6 bg-white rounded-full">
+    <div class="absolute inset-y-0 left-0 bg-blue-500 w-3/4 rounded-full"></div>
+  </div>
+  <div class="absolute top-1/2 left-full transform -translate-y-1/2 ml-2">
+    <span class="text-white font-semibold">75%</span>
+  </div>
+</div>
+
+<div class="flex justify-between mt-11">
+  <div>
+    <h1 class="text-2xl font-bold mb-4">Sunrise & Sunset</h1>
+    
+  </div>
+  <div>
+    <h1 class="text-lg font-bold">Legal</h1>
+  </div>
+</div>
+<div class="mb-2 block mt-2 ">
+  <button class="flex items-center bg-gray-700 h-20 w-full text-white px-4 py-2 rounded">
+    <svg class="w-6 h-6 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+    </svg>
+  
+    <span class="ml-2">Sunrise 4.20 AM</span>
+  </button>
+
+  <button class="flex items-center bg-gray-700 h-20 w-full text-white px-4 py-2 mt-4 rounded">
+    <svg class="w-6 h-6 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 1v2m0 2c3.866 0 7 3.134 7 7 0 2.982-1.856 5.532-4.5 6.5V22h-5v-1.5C5.856 17.532 4 14.982 4 12c0-3.866 3.134-7 7-7z"></path>
+    </svg>
+    <span class="ml-2">Sunset 4.20 AM</span>
+    
+  </button>
+</div>
+
+</div>            
+        </div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
